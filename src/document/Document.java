@@ -64,10 +64,32 @@ public abstract class Document {
 	 */
 	protected int countSyllables(String word)
 	{
-		// TODO: Implement this method so that you can call it from the 
-	    // getNumSyllables method in BasicDocument (module 2) and 
-	    // EfficientDocument (module 3).
-	    return 0;
+		int count = 0;
+		boolean lastWasVowel = false;
+		String vowels = "aeiouy";
+
+		// Check each character in the word
+		for (int i = 0; i < word.length(); i++) {
+			char c = word.toLowerCase().charAt(i);
+			if (vowels.indexOf(c) != -1) {
+				// If this character is a vowel
+				if (!lastWasVowel) {
+					// If the last character was not a vowel, count this as a new syllable
+					count++;
+				}
+				lastWasVowel = true;
+			} else {
+				lastWasVowel = false;
+			}
+		}
+
+		// Subtract one syllable if word ends in "e" but has other syllables
+		if (word.endsWith("e") && count > 1 && vowels.indexOf(word.charAt(word.length() - 2)) == -1) {
+			count--;
+		}
+//		if (word.endsWith("e") && )
+//
+		return count;
 	}
 	
 	/** A method for testing
@@ -132,7 +154,11 @@ public abstract class Document {
 	{
 	    // TODO: You will play with this method in week 1, and 
 		// then implement it in week 2
-	    return 0.0;
+		int numWords = getNumWords();
+		int numSentences = getNumSentences();
+		int numSyllables = getNumSyllables();
+		double fleschScore = 206.835 - 1.015 * (numWords * 1.0 / numSentences) - 84.6 * (numSyllables * 1.0 / numWords);
+	    return fleschScore;
 	}
 	
 	
