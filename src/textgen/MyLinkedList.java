@@ -4,7 +4,7 @@ import java.util.AbstractList;
 
 
 /** A class that implements a doubly linked list
- * 
+ *
  * @author UC San Diego Intermediate Programming MOOC team
  *
  * @param <E> The type of the elements stored in the list
@@ -16,9 +16,9 @@ public class MyLinkedList<E> extends AbstractList<E> {
 
 	/** Create a new empty LinkedList */
 	public MyLinkedList() {
-		head = new LLNode<>(null);
-		tail = new LLNode<>(null);
 		size = 0;
+		head = new LLNode<E>(null);
+		tail = new LLNode<E>(null);
 		head.next = tail;
 		tail.prev = head;
 	}
@@ -27,32 +27,40 @@ public class MyLinkedList<E> extends AbstractList<E> {
 	 * Appends an element to the end of the list
 	 * @param element The element to add
 	 */
-	public boolean add(E element)
+	public boolean add(E element )
 	{
 		if (element == null) {
 			throw new NullPointerException();
 		}
-		LLNode<E> node = new LLNode<>(element);
-		tail.prev.next = node;
-		node.prev = tail.prev;
-		node.next = tail;
-		tail.prev = node;
+		LLNode<E> n = new LLNode<E>(element);
+		tail.prev.next = n;
+		n.prev = tail.prev;
+		n.next = tail;
+		tail.prev = n;
 		size++;
 		return true;
 	}
 
-	/** Get the element at position index 
+	public void addFront(E element) {
+		LLNode<E> n = new LLNode<E>(element);
+		n.next = head.next;
+		n.prev = n.next.prev;
+		n.next.prev = n;
+		head.next = n;
+	}
+
+	/** Get the element at position index
 	 * @throws IndexOutOfBoundsException if the index is out of bounds. */
-	public E get(int index) 
+	public E get(int index)
 	{
 		if (index < 0 || index >= size) {
 			throw new IndexOutOfBoundsException();
 		}
-		LLNode<E> node = head;
+		LLNode<E> n = head;
 		for (int i = 0; i <= index; i++) {
-			node = node.next;
+			n = n.next;
 		}
-		return node.data;
+		return n.data;
 	}
 
 	/**
@@ -60,29 +68,30 @@ public class MyLinkedList<E> extends AbstractList<E> {
 	 * @param The index where the element should be added
 	 * @param element The element to add
 	 */
-	public void add(int index, E element)
+	public void add(int index, E element )
 	{
 		if (element == null) {
 			throw new NullPointerException();
 		}
-		if ((index < 0 || index >= size) && size != 0) {
+		if ((index < 0 || index >= size)&& size != 0) {
 			throw new IndexOutOfBoundsException();
 		}
-		LLNode<E> node = head;
-		for (int i = 0; i <= index; i++) {
-			node = node.next;
+		LLNode<E> prev = head;
+		for (int i = 0; i < index; i++) {
+			prev = prev.next;
 		}
-		LLNode<E> newNode = new LLNode<>(element);
-		newNode.next = node;
-		newNode.prev = node.prev;
-		node.prev = newNode;
-		node.prev.next = newNode;
+		LLNode<E> node = new LLNode<E>(element);
+
+		node.next = prev.next;
+		prev.next = node;
+		node.next.prev = node;
+		node.prev = prev;
 		size++;
 	}
 
 
 	/** Return the size of the list */
-	public int size() 
+	public int size()
 	{
 		return size;
 	}
@@ -91,29 +100,21 @@ public class MyLinkedList<E> extends AbstractList<E> {
 	 * @param index The index of the element to remove
 	 * @return The data element removed
 	 * @throws IndexOutOfBoundsException If index is outside the bounds of the list
-	 * 
+	 *
 	 */
-	public E remove(int index) 
+	public E remove(int index)
 	{
 		if (index < 0 || index >= size) {
 			throw new IndexOutOfBoundsException();
 		}
-		LLNode<E> node = head;
+		LLNode<E> n = head;
 		for (int i = 0; i <= index; i++) {
-			node = node.next;
+			n = n.next;
 		}
-		if (node == head) {
-			head.next = node.next;
-			node.next.prev = head;
-		} else if (node == tail) {
-			tail.prev = node.prev;
-			node.prev.next = tail;
-		} else {
-			node.prev.next = node.next;
-			node.next.prev = node.prev;
-		}
+		n.prev.next = n.next;
+		n.next.prev = n.prev;
 		size--;
-		return node.data;
+		return n.data;
 	}
 
 	/**
@@ -123,25 +124,24 @@ public class MyLinkedList<E> extends AbstractList<E> {
 	 * @return The element that was replaced
 	 * @throws IndexOutOfBoundsException if the index is out of bounds.
 	 */
-	public E set(int index, E element) 
+	public E set(int index, E element)
 	{
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
 		if (element == null) {
 			throw new NullPointerException();
 		}
-		if ((index < 0 || index >= size) && size != 0) {
-			throw new IndexOutOfBoundsException();
-		}
-		LLNode<E> node = head;
+		LLNode<E> n = head;
 		for (int i = 0; i <= index; i++) {
-			node = node.next;
+			n = n.next;
 		}
-		E previousData = node.data;
-		node.data = element;
-		return previousData;
-	}   
+		n.data = element;
+		return element;
+	}
 }
 
-class LLNode<E> 
+class LLNode<E>
 {
 	LLNode<E> prev;
 	LLNode<E> next;
@@ -150,7 +150,14 @@ class LLNode<E>
 	// TODO: Add any other methods you think are useful here
 	// E.g. you might want to add another constructor
 
-	public LLNode(E e) 
+	public LLNode()
+	{
+		this.data = null;
+		this.prev = null;
+		this.next = null;
+	}
+
+	public LLNode(E e)
 	{
 		this.data = e;
 		this.prev = null;
