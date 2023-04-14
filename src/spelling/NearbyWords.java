@@ -76,11 +76,11 @@ public class NearbyWords implements SpellingSuggest {
 	 * @return
 	 */
 	public void insertions(String s, List<String> currentList, boolean wordsOnly) {
-		for (int i = 0; i < s.length(); i++) {
-			for (int charCode = (int) 'a'; charCode < (int) 'z'; charCode++) {
+		for (int i = 0; i <= s.length(); i++) {
+			for (int charCode = (int) 'a'; charCode <= (int) 'z'; charCode++) {
 				StringBuilder sb = new StringBuilder(s);
-				sb.insert(i, charCode);
-				if (!currentList.contains(sb.toString()) && (!wordsOnly || dict.isWord(sb.toString())) && !s.equals(sb.toString())) {
+				sb.insert(i, (char) charCode);
+				if (!currentList.contains(sb.toString()) && (!wordsOnly||dict.isWord(sb.toString())) && !s.equals(sb.toString())) {
 					currentList.add(sb.toString());
 				}
 			}
@@ -88,7 +88,7 @@ public class NearbyWords implements SpellingSuggest {
 	}
 
 	/** Add to the currentList Strings that are one character deletion away
-	 * from the input string.  
+	 * from the input string.
 	 * @param s The original String
 	 * @param currentList is the list of words to append modified words 
 	 * @param wordsOnly controls whether to return only words or any String
